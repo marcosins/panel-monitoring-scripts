@@ -29,7 +29,6 @@ readonly GPU_TEMP=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader
 readonly APP_TO_RUN="nvidia-settings"
 
 
-
 # Tooltip to show on mouse over
 TOOLTIP="${GPU_MODEL}\n"
 TOOLTIP+="\n— Memory —\n"
@@ -55,7 +54,7 @@ TOOLTIP+="Lanes current: ${GPU_PCIE_LANES_USING}\n"
 TOOLTIP+="Lanes max: ${GPU_PCIE_LANES_MAX}\n"
 
 
-echo -e "<txt>${GPU_MEM_USED} | ${GPU_CLOCK_GRAPH} | ${GPU_TEMP} ºC | ${GPU_POWER_DRAW}</txt>"
+echo -e "<txt>${GPU_MEM_USED} | ${GPU_CLOCK_GRAPH} | ${GPU_TEMP} ℃ | ${GPU_POWER_DRAW}</txt>"
 echo -e "<txtclick>${APP_TO_RUN}</txtclick>"
 echo -e "<tool>${TOOLTIP}</tool>"
 
