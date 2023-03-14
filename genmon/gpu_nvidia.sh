@@ -1,15 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Dependencies: bash, nvidia-smi, cut, grep, head, xargs
 
 # GENERAL SETUP
-readonly PANEL_TEXT_SEPARATOR=" · "
+readonly PANEL_TEXT_SEPARATOR="·" # · ︙
 readonly RUN_ON_CLICK="nvidia-settings"
-readonly CELCIUS=" ℃" # you might want `ºC` or '<sup>o</sup>C` instead
+readonly CELCIUS=" <sup>o</sup>C" # you might want `℃`, `ºC` or '<sup>o</sup>C` instead
 
 # NVIDIA GPU INFORMATION AND STATUS
 # DOCS: `nvidia-smi --help-query-gpu`
 # Get all information as CSV then gets each column with `cut`
-readonly GPU_INFO=$(nvidia-smi --query-gpu=memory.total,memory.used,memory.free,clocks.current.graphics,clocks.current.memory,clocks.current.video,pcie.link.gen.current,pcie.link.gen.max,pcie.link.width.current,pcie.link.width.max,power.draw,temperature.gpu,gpu_name,gpu_serial,driver_version,vbios_version --format=csv,noheader)
+readonly GPU_INFO=$(nvidia-smi --query-gpu=\
+memory.total,\
+memory.used,\
+memory.free,\
+clocks.current.graphics,\
+clocks.current.memory,\
+clocks.current.video,\
+pcie.link.gen.current,\
+pcie.link.gen.max,\
+pcie.link.width.current,\
+pcie.link.width.max,\
+power.draw,\
+temperature.gpu,\
+gpu_name,\
+gpu_serial,\
+driver_version,\
+vbios_version --format=csv,noheader)
 ## Memory
 readonly GPU_MEM_TOTAL=$(echo "${GPU_INFO}" | cut -d',' -f 1 | xargs)
 readonly GPU_MEM_USED=$(echo "${GPU_INFO}" | cut -d',' -f 2 | xargs)
@@ -34,13 +50,16 @@ readonly GPU_DRIVER=$(echo "${GPU_INFO}" | cut -d',' -f 15 | xargs)
 readonly GPU_BIOS=$(echo "${GPU_INFO}" | cut -d',' -f 16 | xargs)
 readonly GPU_CUDA=$(nvidia-smi -q -u | grep CUDA | head -n 1 | cut -d ':' -f 2 | xargs)
 
+readonly GPU_MODEL_SHORT="$(echo $GPU_MODEL | cut -d' ' -f 3) $(echo $GPU_MODEL | cut -d' ' -f 4)$(echo $GPU_MODEL | cut -d' ' -f 5)"
+
 # Main text that shows in the panel
-PANEL_TEXT="<txt><tt>"
-PANEL_TEXT+="${GPU_MEM_USED}${PANEL_TEXT_SEPARATOR}"
-PANEL_TEXT+="${GPU_CLOCK_GRAPH}${PANEL_TEXT_SEPARATOR}"
-PANEL_TEXT+="${GPU_TEMP}${CELCIUS}${PANEL_TEXT_SEPARATOR}"
+PANEL_TEXT="<txt>"
+PANEL_TEXT+="<b>${GPU_MODEL_SHORT}</b> ${PANEL_TEXT_SEPARATOR} "
+PANEL_TEXT+="${GPU_MEM_USED} ${PANEL_TEXT_SEPARATOR} "
+PANEL_TEXT+="${GPU_CLOCK_GRAPH} ${PANEL_TEXT_SEPARATOR} "
+PANEL_TEXT+="${GPU_TEMP}${CELCIUS} ${PANEL_TEXT_SEPARATOR} "
 PANEL_TEXT+="${GPU_POWER_DRAW}"
-PANEL_TEXT+="</tt></txt>"
+PANEL_TEXT+="</txt>"
 
 # Tooltip to show on mouse over. Format is pango markup
 # DOCS: https://developer-old.gnome.org/pygtk/stable/pango-markup-language.html
