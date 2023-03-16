@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-microphone-sensitivity-muted
-
 amixer -D pulse set Capture toggle
 
 STATE=($(amixer -D pulse cget numid=2 | grep " values=" | cut -f2 -d "=")) # get the id from `pacmd list-sources`
