@@ -113,6 +113,8 @@ Uses `playerctl` to show information about the current song that is playing on S
 
 Uses `curl` to get an HTTP response from a preset website, if `200` then everything is ok.
 
+> NOTE: Refresh every 10 seconds to not get blocked by the server
+
 ### On Click
 
 Uses `xdg-open` to open the url of your router so you can troubleshoot the problem
